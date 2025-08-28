@@ -1,0 +1,21 @@
+FROM ubuntu:22.04
+
+# Set environment variables to avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+
+# Install build dependencies and Qt6/VTK packages
+RUN apt-get update && apt-get install -y \
+    cmake \
+    build-essential \
+    git \
+    libvtk9-dev \
+    qt6-base-dev \
+    qt6-base-dev-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables
+ENV QT_SELECT=qt6
+ENV CMAKE_BUILD_PARALLEL_LEVEL=4
+
+CMD ["/bin/bash"]

@@ -12,13 +12,9 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-# Find VTK package
+
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(VTK REQUIRED)
-
-# Find Qt6 package
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
-
-# Enable Qt automoc for handling Q_OBJECT
 set(CMAKE_AUTOMOC ON)
 
 set(SOURCES
@@ -58,7 +54,7 @@ vtk_module_autoinit(
 )
 
 # Link Qt6 libraries
-target_link_libraries(3DPointSimulator Qt6::Core Qt6::Widgets)
+target_link_libraries(3DPointSimulator Qt5::Core Qt5::Widgets)
 
 if(UNIX AND NOT APPLE)
     target_link_libraries(3DPointSimulator m)

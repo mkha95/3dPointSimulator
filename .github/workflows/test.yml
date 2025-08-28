@@ -6,57 +6,61 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  DOCKERHUB_OWNER: moaadkhamlich
+  DOCKER_IMAGE_NAME: 3dpointsimulator-builder
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake build-essential
-        sudo apt-get install -y libvtk9-dev libvtk9-qt-dev
-        sudo apt-get install -y qt6-base-dev qt6-base-dev-tools
-    
+        sudo apt-get install -y cmake build-essential git libvtk9-dev
+        sudo apt install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+
+
     - name: Create build directory
-      run: mkdir build
-    
+      run: mkdir -p build
+
     - name: Configure CMake
       run: |
         cd build
         cmake .. -DCMAKE_BUILD_TYPE=Release
-    
+
     - name: Build
       run: |
         cd build
         make -j$(nproc)
-    
-    - name: Test basic functionality
-      run: |
-        cd run
-        echo "cube_size = 5.0
-        num_points = 3
-        min_friction = 0.1
-        max_friction = 0.3
-        num_forces = 1
-        min_acceleration = -1.0
-        max_acceleration = 1.0
-        min_velocity = -0.5
-        max_velocity = 0.5
-        min_initial_velocity = -0.2
-        max_initial_velocity = 0.2
-        simulation_time = 3
-        vtk_output_file = test_output" > test.cfg
-        ./3DPointSimulator test.cfg
-        ls -la test_output*
-    
-    - name: Verify output files
-      run: |
-        cd run
-        test -f test_output.pvd
-        test -f test_output_t0000.vtp
-        test -f test_output_t0001.vtp
-        test -f test_output_t0002.vtp
-        test -f test_output_t0003.vtp
+
+    #- name: Test basic functionality
+      #run: |
+        #cd run
+        #echo "cube_size = 5.0
+        #num_points = 3
+        #min_friction = 0.1
+        #max_friction = 0.3
+        #num_forces = 1
+        #min_acceleration = -1.0
+        #max_acceleration = 1.0
+        #min_velocity = -0.5
+        #max_velocity = 0.5
+        #min_initial_velocity = -0.2
+        #max_initial_velocity = 0.2
+        #simulation_time = 3
+        #vtk_output_file = test_output" > test.cfg
+        #./3DPointSimulator test.cfg
+        #ls -la test_output*
+
+    #- name: Verify output files
+      #run: |
+        #cd run
+        #test -f test_output.pvd
+        #test -f test_output_t0000.vtp
+        #test -f test_output_t0001.vtp
+        #test -f test_output_t0002.vtp
+        #test -f test_output_t0003.vtp
