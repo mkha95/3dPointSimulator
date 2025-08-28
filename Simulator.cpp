@@ -14,16 +14,17 @@ void Simulator::initializePoints() {
     
     for (int i = 0; i < params.numPoints; ++i) {
         Vector3D position = randomVector3D(-params.cubeSize / 2.0, params.cubeSize / 2.0);
-        Vector3D velocity = randomVector3D(params.minVelocity, params.maxVelocity);
         Vector3D initialVelocity = randomVector3D(params.minInitialVelocity, params.maxInitialVelocity);
-        Vector3D acceleration = randomVector3D(params.minAcceleration, params.maxAcceleration);
+        Vector3D acceleration(0.0, 0.0, 0.0); // Start with zero acceleration, forces will set it
         double friction = randomDouble(params.minFriction, params.maxFriction);
         
-        Point point(position, velocity, acceleration, friction);
+        Point point(position, initialVelocity, acceleration, friction);
         point.initialVelocity = initialVelocity;
+        point.setVelocityLimits(params.minVelocity, params.maxVelocity);
+        point.setAccelerationLimits(params.minAcceleration, params.maxAcceleration);
         
         for (const auto& force : forces) {
-            Vector3D forceVector = force.generateForce();
+            Vector3D forceVector = force.generateForce(rng);
             point.applyForce(forceVector);
         }
         
@@ -52,12 +53,17 @@ void Simulator::simulate() {
         pointsHistory.reserve(params.simulationTime + 1);
     }
     
+    const double dt = 0.01;
+    const int stepsPerSecond = static_cast<int>(1.0 / dt);
+    
     for (int t = 0; t <= params.simulationTime; ++t) {
         std::cout << "Time: " << t << " seconds\n";
         std::cout << "====================\n";
         
-        for (size_t i = 0; i < points.size(); ++i) {
-            points[i].updatePosition(static_cast<double>(t));
+        for (int step = 0; step < stepsPerSecond; ++step) {
+            for (size_t i = 0; i < points.size(); ++i) {
+                points[i].update(dt);
+            }
         }
         
         if (params.enableVTKOutput) {

@@ -1,12 +1,17 @@
 #include "Simulator.h"
 #include "ConfigParser.h"
+#include "SimulationGUI.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <QApplication>
 
 void printUsage() {
-    std::cout << "Usage: 3DPointSimulator <config_file>\n";
+    std::cout << "Usage: 3DPointSimulator [options]\n";
+    std::cout << "   OR: 3DPointSimulator <config_file>\n";
     std::cout << "   OR: 3DPointSimulator <L> <N> <a1> <a2> <M> <amin> <amax> <vmin> <vmax> <v0min> <v0max> <T> [vtk_output_file]\n\n";
+    std::cout << "Options:\n";
+    std::cout << "  --gui, -g       - Launch graphical user interface\n\n";
     std::cout << "Config file mode:\n";
     std::cout << "  config_file     - Configuration file (.cfg, .config, or .conf extension)\n\n";
     std::cout << "Command line mode parameters:\n";
@@ -26,6 +31,15 @@ void printUsage() {
 }
 
 int main(int argc, char* argv[]) {
+    QApplication app(argc, argv);
+    
+    // Check for GUI mode
+    if (argc == 1 || (argc == 2 && (std::string(argv[1]) == "--gui" || std::string(argv[1]) == "-g"))) {
+        SimulationGUI window;
+        window.show();
+        return app.exec();
+    }
+    
     if (argc != 2 && argc != 13 && argc != 14) {
         std::cerr << "Error: Incorrect number of arguments.\n\n";
         printUsage();

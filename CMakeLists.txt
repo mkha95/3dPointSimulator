@@ -15,6 +15,12 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 # Find VTK package
 find_package(VTK REQUIRED)
 
+# Find Qt6 package
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+
+# Enable Qt automoc for handling Q_OBJECT
+set(CMAKE_AUTOMOC ON)
+
 set(SOURCES
     main.cpp
     Point.cpp
@@ -22,6 +28,7 @@ set(SOURCES
     Simulator.cpp
     VTKWriter.cpp
     ConfigParser.cpp
+    SimulationGUI.cpp
 )
 
 set(HEADERS
@@ -31,6 +38,7 @@ set(HEADERS
     Simulator.h
     VTKWriter.h
     ConfigParser.h
+    SimulationGUI.h
 )
 
 add_executable(3DPointSimulator ${SOURCES} ${HEADERS})
@@ -48,6 +56,9 @@ vtk_module_autoinit(
   TARGETS 3DPointSimulator
   MODULES ${VTK_LIBRARIES}
 )
+
+# Link Qt6 libraries
+target_link_libraries(3DPointSimulator Qt6::Core Qt6::Widgets)
 
 if(UNIX AND NOT APPLE)
     target_link_libraries(3DPointSimulator m)

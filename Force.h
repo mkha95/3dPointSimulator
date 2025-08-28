@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector3D.h"
+#include <random>
 
 class Force {
 public:
@@ -11,5 +12,5 @@ public:
     Force(const Vector3D& dir, double minMag, double maxMag)
         : direction(dir.normalized()), minMagnitude(minMag), maxMagnitude(maxMag) {}
     
-    Vector3D generateForce() const;
+    Vector3D generateForce(std::mt19937& rng) const;
 };
